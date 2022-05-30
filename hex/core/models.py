@@ -57,16 +57,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['perm']
 
 
-# class UserPerms(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     BASIC = 'bp'
-#     PREMIUM = 'pp'
-#     ENTERPRISE = 'ep'
-#     PLAN_CHOICE = [
-#         (BASIC, 'BASIC PLAN'),
-#         (PREMIUM, 'PREMIUM PLAN'),
-#         (ENTERPRISE, 'ENTERPRISE PLAN'),
-#     ]
-#     perm = models.CharField(max_length=2, choices=PLAN_CHOICE, default=BASIC)

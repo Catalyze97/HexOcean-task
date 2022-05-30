@@ -7,26 +7,29 @@ from django.contrib.auth import get_user_model
 from core import models
 
 
-def create_user(email='user@example.com', password='testpass123'):
+def create_user(email='user@example.com', password='testpass123', perm='bp'):
     """Create and return new user."""
-    return get_user_model().objects.create_user(email, password)
+    return get_user_model().objects.create_user(email, password, perm)
 
 
 class ModelTests(TestCase):
     """Test models."""
 
     def test_crete_user_with_email_successful(self):
-        """Testing creating a user with an email is successful."""
+        """Testing creating a user with an email, password and permissions is successful."""
         email = 'test@example.com'
         password = 'password123'
+        perm = 'bp'
         user = get_user_model().objects.create_user(
             email=email,
             password=password,
+            perm=perm,
 
         )
 
         self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
+        self.assertEqual(user.perm, perm)
 
     def test_new_user_email_normalized(self):
         """Test email is normalized for new users."""
@@ -45,10 +48,15 @@ class ModelTests(TestCase):
         with self.assertRaises(ValueError):
             get_user_model().objects.create_user('', 'test123')
 
-    # def test_new_user_permissions(self):
-    #     """Test that creating a user without a permission raised ValueError"""
-    #     with self.assertRaises(ValueError):
-    #         get_user_model().objects.create_user()
+    def test_new_user_without_perm_raiser_error(self):
+        """Test that creating a user without a permissions """
+        perm = ''
+        user = get_user_model().objects.create_user(
+            email='email@example.com',
+            password='password123',
+            perm='bp',
+        )
+        self.assertNotEqual(user.perm, perm)
 
     def test_create_superuser(self):
         """Test crating a superuser."""
