@@ -47,16 +47,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     BASIC = 'bp'
     PREMIUM = 'pp'
     ENTERPRISE = 'ep'
+    ADMIN = 'aa'
     PLAN_CHOICE = [
         (BASIC, 'BASIC PLAN'),
         (PREMIUM, 'PREMIUM PLAN'),
         (ENTERPRISE, 'ENTERPRISE PLAN'),
+        (ADMIN, 'ADMIN PLAN'),
     ]
-    perm = models.CharField(max_length=2, choices=PLAN_CHOICE, default=BASIC)
+    account_plan = models.CharField(max_length=2, choices=PLAN_CHOICE, default=BASIC)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['perm']
+
 
 

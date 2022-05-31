@@ -7,9 +7,9 @@ from django.contrib.auth import get_user_model
 from core import models
 
 
-def create_user(email='user@example.com', password='testpass123', perm='bp'):
+def create_user(email='user@example.com', password='testpass123', account_plan='bp'):
     """Create and return new user."""
-    return get_user_model().objects.create_user(email, password, perm)
+    return get_user_model().objects.create_user(email, password, account_plan)
 
 
 class ModelTests(TestCase):
@@ -19,17 +19,17 @@ class ModelTests(TestCase):
         """Testing creating a user with an email, password and permissions is successful."""
         email = 'test@example.com'
         password = 'password123'
-        perm = 'bp'
+        account_plan = 'bp'
         user = get_user_model().objects.create_user(
             email=email,
             password=password,
-            perm=perm,
+            account_plan=account_plan,
 
         )
 
         self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
-        self.assertEqual(user.perm, perm)
+        self.assertEqual(user.account_plan, account_plan)
 
     def test_new_user_email_normalized(self):
         """Test email is normalized for new users."""
@@ -50,13 +50,13 @@ class ModelTests(TestCase):
 
     def test_new_user_without_perm_raiser_error(self):
         """Test that creating a user without a permissions """
-        perm = ''
+        account_plan = ''
         user = get_user_model().objects.create_user(
             email='email@example.com',
             password='password123',
-            perm='bp',
+            account_plan='bp',
         )
-        self.assertNotEqual(user.perm, perm)
+        self.assertNotEqual(user.account_plan, account_plan)
 
     def test_create_superuser(self):
         """Test crating a superuser."""
