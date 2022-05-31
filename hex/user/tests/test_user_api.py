@@ -1,6 +1,7 @@
 """
 Test for the user API.
 """
+from django.http import HttpRequest
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -132,7 +133,7 @@ class PrivateUserApiTest(TestCase):
         self.assertEqual(res.data, {
             'name': self.user.name,
             'email': self.user.email,
-            'account_plan': self.user.account_plan,
+
         })
 
     def test_post_me_not_allowed(self):
@@ -151,13 +152,4 @@ class PrivateUserApiTest(TestCase):
         self.assertEqual(self.user.name, payload['name'])
         self.assertTrue(self.user.check_password(payload['password']))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-
-    def test_update_user_account_plan_raise_error(self):
-        """Test that user while updating profile can't change an account plan"""
-        payload = {'name': 'Updated name', 'password': 'newpassword123', 'account_plan': 'bp'}
-
-        res = self.client.patch(ME_URL, payload)
-
-
-
 
