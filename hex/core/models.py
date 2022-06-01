@@ -1,15 +1,13 @@
 """
-Database models.
+Database core models.
 """
 from django.db import models
-import os
-from django.conf import settings
+
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
-# from django.contrib.auth.models import User
 
 
 class UserManager(BaseUserManager):
@@ -59,6 +57,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+
 
 
 

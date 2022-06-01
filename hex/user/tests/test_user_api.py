@@ -1,7 +1,6 @@
 """
 Test for the user API.
 """
-from django.http import HttpRequest
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -119,8 +118,6 @@ class PrivateUserApiTest(TestCase):
             email='test@example.com',
             password='testpass123',
             name='Test name',
-            account_plan='bp',
-
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
@@ -130,11 +127,10 @@ class PrivateUserApiTest(TestCase):
         res = self.client.get(ME_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, {
-            'name': self.user.name,
-            'email': self.user.email,
+        self.user.refresh_from_db()
 
-        })
+        self.assertEqual(res.data['email'], self.user.email)
+        self.assertEqual(res.data['name'], self.user.name)
 
     def test_post_me_not_allowed(self):
         """Test POST is not allowed for the me endpoint"""

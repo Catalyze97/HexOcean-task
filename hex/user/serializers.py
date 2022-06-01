@@ -8,12 +8,14 @@ from django.contrib.auth import (
 
 )
 from django.utils.translation import gettext as _
-from rest_framework import serializers
-from rest_framework.serializers import raise_errors_on_nested_writes
+from rest_framework import serializers, status
+from django.urls import reverse
+from rest_framework.response import Response
 
 
 class BaseUserSerializer(serializers.ModelSerializer):
     """Base user serializer for user attributes."""
+
     def create(self, validated_data):
         """Create and return a user with encrypted password."""
         return get_user_model().objects.create_user(**validated_data)
@@ -39,7 +41,7 @@ class UserSerializer(BaseUserSerializer):
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
 
 
-class AdminUserSerializer(serializers.ModelSerializer):
+class AdminUserSerializer(BaseUserSerializer):
     """Admin user can update every field"""
 
     class Meta:
@@ -48,15 +50,15 @@ class AdminUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
 
 
-class NormalUserSerializer(serializers.ModelSerializer):
+class NormalUserSerializer(BaseUserSerializer):
     """NonAdmin user can't update account_plan"""
+
     class Meta:
         model = get_user_model()
         # fields = ['email', 'password', 'name' ]
         # read_only_fields = ['account_plan']
         exclude = ['account_plan']
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
-
 
 
 class AuthTokenSerializer(serializers.Serializer):

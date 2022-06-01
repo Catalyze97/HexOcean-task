@@ -1,11 +1,13 @@
 """
 Views for the user API.
 """
-from rest_framework import generics, authentication, permissions
+from rest_framework import generics, authentication, permissions, status
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
 from user.serializers import (
+    BaseUserSerializer,
     UserSerializer,
     AuthTokenSerializer,
     AdminUserSerializer,
@@ -27,14 +29,27 @@ class CreateTokenView(ObtainAuthToken):
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
     """Manage the authenticated user."""
-    # serializer_class = UserSerializer
+    serializer_class = UserSerializer
+    serializers = {
+        AdminUserSerializer,
+        NormalUserSerializer,
+        UserSerializer,
+    }
+
     def get_serializer_class(self):
         if self.request.user.is_staff:
             return AdminUserSerializer
-        else:
+        if not self.request.user.is_staff:
             return NormalUserSerializer
+
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.serializer_class(request.user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_object(self):
         """Retrieve and return the authenticated user."""

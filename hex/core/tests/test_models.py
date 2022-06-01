@@ -1,6 +1,7 @@
 """
 Test for models.
 """
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
@@ -67,3 +68,6 @@ class ModelTests(TestCase):
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+
+
