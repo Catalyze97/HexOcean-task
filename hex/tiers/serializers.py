@@ -12,11 +12,12 @@ class TierSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tier
-        fields = ['id', 'title', 'description', 'image']
+        fields = ['id', 'title', 'description', 'link']
         read_only_fields = ['id']
 
     def create(self, validated_data):
         """Create a tier."""
+
         tiers = Tier.objects.create(**validated_data)
         return tiers
 
@@ -26,21 +27,19 @@ class TierSerializer(serializers.ModelSerializer):
         return tiers
 
 
-class TierDetailSerializer(serializers.ModelSerializer):
-
+class TierDetailSerializer(TierSerializer.Meta):
+    """Serializer for tier detail view"""
     class Meta:
         model = Tier
-        fields = ['id', 'title', 'description', 'link', 'image']
-
-    # def create(self, validated_data):
-    #     for attr, value in validated_data.items():
-    #         setattr(instance, attr, value)
-    #     instance.save()
-    #     return instance
+        fields = TierSerializer.Meta.fields + ['image']
 
 
 class TierImageSerializer(serializers.ModelSerializer):
-    model = Tier
-    fields = ['id', 'image']
-    read_only_fields = ['id']
-    extra_kwargs = {'image': {'required': True}}
+    """Serializer for uploading images to tiers."""
+    class Meta:
+        model = Tier
+        fields = ['id', 'image']
+        read_only_fields = ['id']
+        extra_kwargs = {'image': {'required': 'True'}}
+
+

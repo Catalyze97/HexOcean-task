@@ -4,8 +4,6 @@ URL mappings for the user API.
 from django.urls import path
 
 from . import views
-from . import serializers
-from user.serializers import UserSerializer
 
 app_name = 'user'
 

@@ -39,8 +39,15 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
     def get_serializer_class(self):
         if self.request.user.is_staff:
             return AdminUserSerializer
+        # if self.request.user.account_plan == 'bp':
+        #     print(self.request.user.account_plan)
+        #     return AdminUserSerializer
         if not self.request.user.is_staff:
             return NormalUserSerializer
+        # else:
+        #     print(self.request.user.account_plan)
+
+
 
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]

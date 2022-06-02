@@ -22,7 +22,7 @@ class Tier(models.Model):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    image = models.ImageField(null=True, upload_to=tier_image_file_path)
+    image = models.ImageField(blank=True, null=True, upload_to=tier_image_file_path)
     link = models.CharField(max_length=255, blank=True)
 
     def __str__(self):

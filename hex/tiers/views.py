@@ -13,8 +13,8 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from . import serializers
 from tiers.models import Tier
+from tiers import serializers
 
 
 class TierViewSet(viewsets.ModelViewSet):
@@ -28,18 +28,27 @@ class TierViewSet(viewsets.ModelViewSet):
         """Converts a list of strings to integers."""
         return [int(str_id) for str_id in qs.split(',')]
 
-    def get_serializer_class(self):
-        """Return the serializer class for request."""
-        if self.action == 'list':
-            return serializers.TierSerializer
-        elif self.action == 'upload_image':
-            return serializers.TierImageSerializer
+    def get_queryset(self):
+        """Retrieve tiers for authenticated users."""
+        queryset = self.queryset
+        return queryset.filter(
+            user=self.request.user
+        ).order_by('-id').distinct()
 
-        return self.serializer_class
+
+    # def get_serializer_class(self):
+    #     """Return the serializer class for request."""
+    #     if self.action == 'list':
+    #         return serializers.TierSerializer
+    #     elif self.action == 'upload_image':
+    #         return serializers.TierImageSerializer
+    #
+    #     return self.serializer_class
 
     def perform_create(self, serializer):
         """Create a new tier."""
         serializer.save(user=self.request.user)
+
 
     @action(methods=['POST'], detail=True, url_path='upload-image')
     def upload_image(self, request, pk=None):
