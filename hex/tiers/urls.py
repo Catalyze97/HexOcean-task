@@ -14,6 +14,7 @@ from . import views
 
 router = DefaultRouter()
 router.register('tiers', views.TierViewSet)
+router.register('custom_images', views.CustomImagesViewSet)
 
 app_name = 'tiers'
 

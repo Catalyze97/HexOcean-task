@@ -22,8 +22,30 @@ class Tier(models.Model):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    image = models.ImageField(blank=True, null=True, upload_to=tier_image_file_path)
-    link = models.CharField(max_length=255, blank=True)
+    custom_images = models.ManyToManyField('CustomImages')
 
     def __str__(self):
         return self.title
+
+
+class CustomImages(models.Model):
+    """Custom image for filtering tiers."""
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    image = models.ImageField(blank=True, null=True, upload_to=tier_image_file_path)
+    link_original = models.CharField(max_length=255, blank=True, null=True,)
+    link_200px = models.CharField(max_length=255, blank=True, null=True,)
+    link_400px = models.CharField(max_length=255, blank=True, null=True,)
+    expiring_link_val = models.IntegerField(blank=True, null=True,)
+    expiring_link = models.CharField(max_length=255, blank=True, null=True,)
+    """Fields for custom tiers."""
+    custom_expiring_link = models.CharField(max_length=255, blank=True, null=True,)
+    custom_link_height = models.IntegerField(blank=True, null=True,)
+    custom_link_width = models.IntegerField(blank=True, null=True,)
+    custom_link = models.CharField(max_length=255, blank=True, null=True,)
+
+    def __str__(self):
+        return self.name
