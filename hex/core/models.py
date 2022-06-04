@@ -42,17 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    BASIC = 'bp'
-    PREMIUM = 'pp'
-    ENTERPRISE = 'ep'
-    ADMIN = 'aa'
-    PLAN_CHOICE = [
-        (BASIC, 'BASIC PLAN'),
-        (PREMIUM, 'PREMIUM PLAN'),
-        (ENTERPRISE, 'ENTERPRISE PLAN'),
-        (ADMIN, 'ADMIN PLAN'),
-    ]
-    account_plan = models.CharField(max_length=2, choices=PLAN_CHOICE, default=BASIC)
+    account_plan = models.CharField(max_length=2, blank=False, default='bp')
 
     objects = UserManager()
 

@@ -55,8 +55,6 @@ class NormalUserSerializer(BaseUserSerializer):
 
     class Meta:
         model = get_user_model()
-        # fields = ['email', 'password', 'name' ]
-        # read_only_fields = ['account_plan']
         exclude = ['account_plan']
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
 

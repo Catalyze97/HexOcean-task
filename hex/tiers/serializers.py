@@ -28,7 +28,7 @@ class BasicCustomImagesSerializer(BaseCustomImagesSerializer):
 class PremiumCustomImagesSerializer(BaseCustomImagesSerializer):
     """Serializer of custom images for premium tier account."""
     class Meta(BaseCustomImagesSerializer.Meta):
-        fields = BaseCustomImagesSerializer.Meta.fields + ['link_200px', 'link_original', 'link_400px']
+        fields = BaseCustomImagesSerializer.Meta.fields + ['image', 'link_200px', 'link_original', 'link_400px']
         read_only_fields = ['link_200px', 'link_original', 'link_400px']
 
 
@@ -59,7 +59,7 @@ class TierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tier
         fields = ['id', 'title', 'description', 'custom_images']
-        read_only_fields = ['id']
+        read_only_fields = ['__all__']
 
     def _get_or_create_custom_images(self, customimages, tiers):
         """Handle getting or creating custom images as needed."""
