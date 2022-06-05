@@ -50,8 +50,7 @@ def create_custom_images(user, **params):
         'expiring_link_val': 50,
         'expiring_link': '',
         'custom_expiring_link': '',
-        'custom_link_height': 200,
-        'custom_link_width': 400,
+
 
     }
     defaults.update(params)

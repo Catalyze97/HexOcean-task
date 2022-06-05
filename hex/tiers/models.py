@@ -34,24 +34,12 @@ class Tier(models.Model):
         return self.title
 
 
-# def thumbnail_processors(instance, file):
-#     # Dynamic width lookup.
-#     width = CustomImages.custom_link_height
-#
-#     height = CustomImages.custom_link_width
-#
-#     return [
-#         SmartResize(width=width, height=height)
-#         ]
-
 class AvatarThumbnail(ImageSpec):
-    format = 'png'
-    options = {'quality': 60}
 
     @property
     def processors(self):
         model, field_name = get_field_info(self.source)
-        return [ResizeToFill(model.custom_link_width, model.custom_link_)]
+        return [ResizeToFill(model.custom_link_height, model.custom_link_width)]
 
 
 register.generator('tiers:customimages:custom_link', AvatarThumbnail)
@@ -83,10 +71,13 @@ class CustomImages(models.Model):
     expiring_link = models.CharField(max_length=255, blank=True, null=True,)
     """Fields for custom tiers."""
     custom_expiring_link = models.CharField(max_length=255, blank=True, null=True,)
-    custom_link_height = models.PositiveIntegerField(blank=True)
-    custom_link_width = models.PositiveIntegerField(blank=True)
+    custom_link_height = models.PositiveIntegerField(blank=True, null=True)
+    custom_link_width = models.PositiveIntegerField(blank=True, null=True)
+
     custom_link = ImageSpecField(source='image',
-                                 id='tiers:customimages:custom_link')
+                                 id='tiers:customimages:custom_link',
+                                 format='png',
+                                 options={'quality': 70})
 
     def __str__(self):
         return self.name
