@@ -118,9 +118,6 @@ class CustomImagesViewSet(mixins.DestroyModelMixin,
 
     queryset = CustomImages.objects.all()
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
     @action(methods=['POST'], detail=True, url_path='upload-image')
     def upload_image(self, request, pk=None):
         """Upload an image to Custom images"""
@@ -132,3 +129,6 @@ class CustomImagesViewSet(mixins.DestroyModelMixin,
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

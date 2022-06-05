@@ -3,6 +3,6 @@ djangorestframework>=3.13,<3.14
 psycopg2>=2.9.3,<2.10
 drf-spectacular>=0.22.1,<0.23
 Pillow>=9.1.1,<9.2
-# uwsgi>=2.0.20,<2.1
 flake8>=4.0.1,<4.1
-pytest>=7.1.2,<=7.2
+django-imagekit>=4.1.0,<4.1.1
+

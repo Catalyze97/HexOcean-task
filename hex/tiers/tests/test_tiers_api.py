@@ -2,6 +2,11 @@
 from django.test import TestCase
 from django.urls import reverse
 
+import tempfile
+import os
+
+from PIL import Image
+
 from unittest.mock import patch
 
 from tiers import models
@@ -21,6 +26,10 @@ def detail_url(tier_id):
     return reverse('tiers:tier-detail', args=[tier_id])
 
 
+def image_upload_url(customimages_id):
+    return reverse('tiers:customimages-detail', args=[customimages_id])
+
+
 def create_tier(user, **params):
     """Create and return a sample tier."""
     defaults = {
@@ -38,9 +47,6 @@ def create_custom_images(user, **params):
     defaults = {
         'name': 'Image1',
         'image': '',
-        'link_original': '',
-        'link_200px': '',
-        'link_400px': '',
         'expiring_link_val': 50,
         'expiring_link': '',
         'custom_expiring_link': '',
@@ -261,3 +267,33 @@ class PrivateTiersApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(tiers.custom_images.count(), 0)
+
+
+class UploadImageTest(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            'user@example.com',
+            'password123'
+        )
+        self.client.force_authenticate(self.user)
+        self.customimages = create_custom_images(user=self.user)
+
+    def tearDown(self):
+        self.customimages.image.delete()
+
+    def test_upload_image(self):
+        """test"""
+        url = image_upload_url(self.customimages.id)
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as image_file:
+            img = Image.new('RGB', (10, 10))
+            img.save(image_file, format='JPEG')
+            image_file.seek(0)
+            payload = {'image': image_file}
+            res = self.client.post(url, payload, format='multipart')
+
+        self.customimages.refresh_from_db()
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn('image', res.data)
+        self.assertTrue(os.path.exists(self.customimages.image.path))

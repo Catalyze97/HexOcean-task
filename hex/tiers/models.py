@@ -4,7 +4,9 @@ import os
 
 from django.db import models
 from django.conf import settings
-
+from django.core.validators import FileExtensionValidator
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill, ResizeToFill
 
 def tier_image_file_path(instance, filename):
     """Generate file path for new tier image."""
@@ -35,16 +37,27 @@ class CustomImages(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    image = models.ImageField(blank=True, null=True, upload_to=tier_image_file_path)
-    link_original = models.CharField(max_length=255, blank=True, null=True,)
-    link_200px = models.CharField(max_length=255, blank=True, null=True,)
-    link_400px = models.CharField(max_length=255, blank=True, null=True,)
-    expiring_link_val = models.IntegerField(blank=True, null=True,)
+    image = models.ImageField(blank=True,
+                              null=True,
+                              upload_to=tier_image_file_path,
+                              validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png'])])
+
+    link_200px = ImageSpecField(source='image',
+                                processors=[ResizeToFill(200, 200)],
+                                format='PNG',
+                                options={'quality': 70})
+
+    link_400px = ImageSpecField(source='image',
+                                processors=[ResizeToFill(400, 400)],
+                                format='PNG',
+                                options={'quality': 70})
+
+    expiring_link_val = models.PositiveIntegerField(blank=True, null=True,)
     expiring_link = models.CharField(max_length=255, blank=True, null=True,)
     """Fields for custom tiers."""
     custom_expiring_link = models.CharField(max_length=255, blank=True, null=True,)
-    custom_link_height = models.IntegerField(blank=True, null=True,)
-    custom_link_width = models.IntegerField(blank=True, null=True,)
+    custom_link_height = models.PositiveIntegerField(blank=True, null=True, default=0)
+    custom_link_width = models.PositiveIntegerField(blank=True, null=True, default=0)
     custom_link = models.CharField(max_length=255, blank=True, null=True,)
 
     def __str__(self):

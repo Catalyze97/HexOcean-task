@@ -7,7 +7,6 @@ from tiers.models import(
     Tier,
     CustomImages,
 )
-# from core.models import User
 
 
 class BaseCustomImagesSerializer(serializers.ModelSerializer):
@@ -20,28 +19,33 @@ class BaseCustomImagesSerializer(serializers.ModelSerializer):
 
 class BasicCustomImagesSerializer(BaseCustomImagesSerializer):
     """Serializer of custom images for basic tier account."""
+    link_200px = serializers.ImageField(read_only=True)
+
     class Meta(BaseCustomImagesSerializer.Meta):
         fields = BaseCustomImagesSerializer.Meta.fields + ['link_200px']
-        read_only_fields = ['link_200px']
 
 
 class PremiumCustomImagesSerializer(BaseCustomImagesSerializer):
     """Serializer of custom images for premium tier account."""
+    link_200px = serializers.ImageField(read_only=True)
+    link_400px = serializers.ImageField(read_only=True)
+
     class Meta(BaseCustomImagesSerializer.Meta):
-        fields = BaseCustomImagesSerializer.Meta.fields + ['image', 'link_200px', 'link_original', 'link_400px']
-        read_only_fields = ['link_200px', 'link_original', 'link_400px']
+        fields = BaseCustomImagesSerializer.Meta.fields + ['image', 'link_200px', 'link_400px']
 
 
 class EnterpriseCustomImagesSerializer(BaseCustomImagesSerializer):
     """Serializer of custom images for enterprise tier account."""
+    link_200px = serializers.ImageField(read_only=True)
+    link_400px = serializers.ImageField(read_only=True)
+
     class Meta(BaseCustomImagesSerializer.Meta):
         fields = BaseCustomImagesSerializer.Meta.fields + ['link_200px',
-                                                           'link_original',
                                                            'link_400px',
                                                            'expiring_link_val',
                                                            'expiring_link']
 
-        read_only_fields = ['link_200px', 'link_original', 'link_400px', 'expiring_link']
+        read_only_fields = ['expiring_link']
 
 
 class AdminCustomImagesSerializer(BaseCustomImagesSerializer):
@@ -110,5 +114,3 @@ class CustomImagesImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image']
         read_only_fields = ['id']
         extra_kwargs = {'image': {'required': 'True'}}
-
-
