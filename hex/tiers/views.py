@@ -17,10 +17,7 @@ from rest_framework import (
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import (
-    IsAuthenticated,
-    IsAdminUser,
-    )
+from rest_framework.permissions import IsAuthenticated
 from .permissons import UserPermission
 
 from tiers.models import (
@@ -36,7 +33,6 @@ class TierViewSet(viewsets.ModelViewSet):
     queryset = Tier.objects.all()
     authentication_classes = [TokenAuthentication]
     permission_classes = [UserPermission]
-
 
     def _params_to_ints(self, qs):
         """Converts a list of strings to integers."""
@@ -128,8 +124,8 @@ class CustomImagesViewSet(mixins.DestroyModelMixin,
     @action(methods=['POST'], detail=True, url_path='upload-image')
     def upload_image(self, request, pk=None):
         """Upload an image to Custom images"""
-        customimg = self.get_object()
-        serializer = self.get_serializer(customimg, data=request.data)
+        custom_img = self.get_object()
+        serializer = self.get_serializer(custom_img, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
