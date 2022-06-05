@@ -50,10 +50,12 @@ class EnterpriseCustomImagesSerializer(BaseCustomImagesSerializer):
 
 class AdminCustomImagesSerializer(BaseCustomImagesSerializer):
     """Serializer of custom images for admin custom tier account."""
+    # custom_link = serializers.ImageField(read_only=True)
+
     class Meta(BaseCustomImagesSerializer.Meta):
         fields = BaseCustomImagesSerializer.Meta.fields + ['custom_expiring_link',
                                                            'custom_link',
-                                                           'link_original']
+                                                           'image']
 
 
 class TierSerializer(serializers.ModelSerializer):

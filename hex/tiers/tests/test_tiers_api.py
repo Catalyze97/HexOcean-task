@@ -52,7 +52,7 @@ def create_custom_images(user, **params):
         'custom_expiring_link': '',
         'custom_link_height': 200,
         'custom_link_width': 400,
-        'custom_link': '',
+
     }
     defaults.update(params)
 

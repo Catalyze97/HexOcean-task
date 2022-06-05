@@ -5,8 +5,12 @@ import os
 from django.db import models
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
+
+from imagekit import ImageSpec, register
 from imagekit.models import ImageSpecField
-from imagekit.processors import ResizeToFill, ResizeToFill
+from imagekit.processors import ResizeToFill
+from imagekit.utils import get_field_info
+
 
 def tier_image_file_path(instance, filename):
     """Generate file path for new tier image."""
@@ -28,6 +32,29 @@ class Tier(models.Model):
 
     def __str__(self):
         return self.title
+
+
+# def thumbnail_processors(instance, file):
+#     # Dynamic width lookup.
+#     width = CustomImages.custom_link_height
+#
+#     height = CustomImages.custom_link_width
+#
+#     return [
+#         SmartResize(width=width, height=height)
+#         ]
+
+class AvatarThumbnail(ImageSpec):
+    format = 'png'
+    options = {'quality': 60}
+
+    @property
+    def processors(self):
+        model, field_name = get_field_info(self.source)
+        return [ResizeToFill(model.custom_link_width, model.custom_link_)]
+
+
+register.generator('tiers:customimages:custom_link', AvatarThumbnail)
 
 
 class CustomImages(models.Model):
@@ -56,9 +83,10 @@ class CustomImages(models.Model):
     expiring_link = models.CharField(max_length=255, blank=True, null=True,)
     """Fields for custom tiers."""
     custom_expiring_link = models.CharField(max_length=255, blank=True, null=True,)
-    custom_link_height = models.PositiveIntegerField(blank=True, null=True, default=0)
-    custom_link_width = models.PositiveIntegerField(blank=True, null=True, default=0)
-    custom_link = models.CharField(max_length=255, blank=True, null=True,)
+    custom_link_height = models.PositiveIntegerField(blank=True)
+    custom_link_width = models.PositiveIntegerField(blank=True)
+    custom_link = ImageSpecField(source='image',
+                                 id='tiers:customimages:custom_link')
 
     def __str__(self):
         return self.name
