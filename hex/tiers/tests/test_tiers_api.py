@@ -79,8 +79,7 @@ class PrivateTiersApiTests(TestCase):
     def setUp(self):
         self.user = create_user(email='user@example.com',
                                 password='test123',
-                                is_superuser=True,
-                                is_staff=True)
+                                )
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
