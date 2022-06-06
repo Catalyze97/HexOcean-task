@@ -87,7 +87,7 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
         if not self.request.user.is_staff:
             return NormalUserSerializer
 
-    authentication_classes = [authentication.TokenAuthentication]
+    authentication_classes = [authentication.SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def update(self, request, *args, **kwargs):

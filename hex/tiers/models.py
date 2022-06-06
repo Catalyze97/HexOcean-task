@@ -8,7 +8,7 @@ from django.core.validators import FileExtensionValidator
 
 from imagekit import ImageSpec, register
 from imagekit.models import ImageSpecField
-from imagekit.processors import ResizeToFill
+from imagekit.processors import Resize
 from imagekit.utils import get_field_info
 
 
@@ -39,7 +39,7 @@ class AvatarThumbnail(ImageSpec):
     @property
     def processors(self):
         model, field_name = get_field_info(self.source)
-        return [ResizeToFill(model.custom_link_height,
+        return [Resize(model.custom_link_height,
                              model.custom_link_width)]
 
 
@@ -61,12 +61,12 @@ class CustomImages(models.Model):
                               )])
 
     link_200px = ImageSpecField(source='image',
-                                processors=[ResizeToFill(200, 200)],
+                                processors=[Resize(200, 200)],
                                 format='PNG',
                                 options={'quality': 70})
 
     link_400px = ImageSpecField(source='image',
-                                processors=[ResizeToFill(400, 400)],
+                                processors=[Resize(400, 400)],
                                 format='PNG',
                                 options={'quality': 70})
 
