@@ -5,6 +5,10 @@ Finish date: 06.05.2022.
 
 Time spent: 55-60 hours
 
+**Note**
+
+I recommend to use this version and use swagger API.
+
 Make sure you have docker and docker-compose installed, 
 and install all requirements in file requirements.txt.
 
@@ -14,8 +18,7 @@ docker-compose up
 
 This version of project is made for default API Rest framework user UI.
 
-I Recommend to use version for SWAGGER API UI for authorization by token. 
-In this project user authorization is made by session authenticate.
+In this project user authorization is made by token in Swagger UI.
 
 To get admin panel, you need to createsuperuser.
 Command:
@@ -32,36 +35,28 @@ In admin panel to define which tier using user you need to type in field account
 
 Next in application tiers you must create a tier for user and CustomImages also.
 
-To log in user go to the link: http://0.0.0.0:8000/api/user/login/
-To log in you need in the content box paste json code and post, example:
+Swagger API UI:
+http://0.0.0.0:8000/api/docs/
 
-{
-    "email": "user@example.com",
-    "password": "password12345745"
-}
+To log in user go to the bottom of site and use POST method /api/user/token/
+When credentials are validated, copy token and in top of site you have authorize panel.
+type Token and paste your token in "tokenAuth (apiKey)".
+Example:
+Token 30e2e5c2efe693f5e84eb9ded047e74c5c45cadb
 
-To log out user go to the link: http://0.0.0.0:8000/api/user/logout/
+Now you are logged in.
 
-Check user is logged in:
-http://0.0.0.0:8000/api/user/me/
+Not admin users can't change anything in tiers, only list method.
 
-Tier app url:
-http://0.0.0.0:8000/api/tier/
+To upload image check id of instance /api/tier/custom_images/
 
-App with images:
-Check id which you want upload an image.
-Here you can also create new custom image instance.
-http://0.0.0.0:8000/api/tier/custom_images/
+Next go to the /api/tier/custom_images/{id}/upload-image/
+and change format of request from application/json to multipart/form-data
+paste id your image, and it's uploaded!
 
-App with uploading images:
-After **/custom_images/{PASTE THERE AN ID}/upload-image/
+You can check list of your images in /api/tier/custom_images/
+Don't change the value of field "0", and execute code.
 
-example:
-http://0.0.0.0:8000/api/tier/custom_images/1/upload-image/
-
-After you uploaded images you can again check links to your image,
-there are only links to user account tier.
-http://0.0.0.0:8000/api/tier/custom_images/
 
 To flush database:
 In terminal:
@@ -71,8 +66,8 @@ In terminal:
 4) docker-compose run --rm app sh -c "python manage.py makemigrations"
 5) docker-compose up
 
-Project with Swagger API UI:
-https://github.com/Catalyze97/HexOcean-task-swagger
+Project with Django rest framework default API UI:
+https://github.com/Catalyze97/HexOcean-task
 
 **IMPORTANT NOTE** - 
 I've changed my schema model of project in last three days, and application tiers was created 
