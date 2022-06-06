@@ -54,7 +54,8 @@ class PrivateCustomImagesApiTests(TestCase):
         res = self.client.get(CUSTOM_IMAGES_URL)
 
         custom_images = CustomImages.objects.all().order_by('-name')
-        serializer = serializers.BasicCustomImagesSerializer(custom_images, many=True)
+        serializer = serializers.BasicCustomImagesSerializer(custom_images,
+                                                             many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
@@ -62,7 +63,8 @@ class PrivateCustomImagesApiTests(TestCase):
         """Test list of custom images is limited to authenticated user."""
         user2 = create_user(email='user2@example.com')
         CustomImages.objects.create(user=user2, name='ImgCoffe')
-        custom_image = CustomImages.objects.create(user=self.user, name='ImgTea')
+        custom_image = CustomImages.objects.create(user=self.user,
+                                                   name='ImgTea')
 
         res = self.client.get(CUSTOM_IMAGES_URL)
 
@@ -73,7 +75,8 @@ class PrivateCustomImagesApiTests(TestCase):
 
     def test_update_custom_images(self):
         """Test updating a custom images"""
-        custom_image = CustomImages.objects.create(user=self.user, name='ImageCoffe')
+        custom_image = CustomImages.objects.create(user=self.user,
+                                                   name='ImageCoffe')
 
         payload = {'name': 'ImageTea'}
         url = detail_url(custom_image.id)
@@ -85,7 +88,8 @@ class PrivateCustomImagesApiTests(TestCase):
 
     def test_deleting_custom_images(self):
         """Test deleting a custom images."""
-        custom_image = CustomImages.objects.create(user=self.user, name='ImageBeer')
+        custom_image = CustomImages.objects.create(user=self.user,
+                                                   name='ImageBeer')
 
         url = detail_url(custom_image.id)
         res = self.client.delete(url)

@@ -43,13 +43,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
 
     account_plan = models.CharField(max_length=2, blank=False, default='bp')
-
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-
-
-
-
-
-

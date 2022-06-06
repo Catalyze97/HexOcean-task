@@ -13,7 +13,6 @@ from django.contrib.auth import (
 
 
 from user.serializers import (
-    BaseUserSerializer,
     UserSerializer,
     AuthTokenSerializer,
     AdminUserSerializer,
@@ -92,7 +91,9 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.user, data=request.data, partial=True)
+        serializer = self.serializer_class(request.user,
+                                           data=request.data,
+                                           partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -2,7 +2,7 @@
 URL mappings for the tiers app.
 """
 
-from django.urls import(
+from django.urls import (
     path,
     include,
 )

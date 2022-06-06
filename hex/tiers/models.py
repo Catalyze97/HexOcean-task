@@ -39,7 +39,8 @@ class AvatarThumbnail(ImageSpec):
     @property
     def processors(self):
         model, field_name = get_field_info(self.source)
-        return [ResizeToFill(model.custom_link_height, model.custom_link_width)]
+        return [ResizeToFill(model.custom_link_height,
+                             model.custom_link_width)]
 
 
 register.generator('tiers:customimages:custom_link', AvatarThumbnail)
@@ -55,7 +56,9 @@ class CustomImages(models.Model):
     image = models.ImageField(blank=True,
                               null=True,
                               upload_to=tier_image_file_path,
-                              validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png'])])
+                              validators=[FileExtensionValidator(
+                                  allowed_extensions=['jpg', 'png']
+                              )])
 
     link_200px = ImageSpecField(source='image',
                                 processors=[ResizeToFill(200, 200)],
@@ -67,12 +70,19 @@ class CustomImages(models.Model):
                                 format='PNG',
                                 options={'quality': 70})
 
-    expiring_link_val = models.PositiveIntegerField(blank=True, null=True,)
-    expiring_link = models.CharField(max_length=255, blank=True, null=True,)
+    expiring_link_val = models.PositiveIntegerField(blank=True,
+                                                    null=True,)
+    expiring_link = models.CharField(max_length=255,
+                                     blank=True,
+                                     null=True,)
     """Fields for custom tiers."""
-    custom_expiring_link = models.CharField(max_length=255, blank=True, null=True,)
-    custom_link_height = models.PositiveIntegerField(blank=True, null=True)
-    custom_link_width = models.PositiveIntegerField(blank=True, null=True)
+    custom_expiring_link = models.CharField(max_length=255,
+                                            blank=True,
+                                            null=True,)
+    custom_link_height = models.PositiveIntegerField(blank=True,
+                                                     null=True)
+    custom_link_width = models.PositiveIntegerField(blank=True,
+                                                    null=True)
 
     custom_link = ImageSpecField(source='image',
                                  id='tiers:customimages:custom_link',

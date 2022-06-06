@@ -3,7 +3,7 @@ Serializers for tiers API.
 """
 from rest_framework import serializers
 
-from tiers.models import(
+from tiers.models import (
     Tier,
     CustomImages,
 )
@@ -31,7 +31,9 @@ class PremiumCustomImagesSerializer(BaseCustomImagesSerializer):
     link_400px = serializers.ImageField(read_only=True)
 
     class Meta(BaseCustomImagesSerializer.Meta):
-        fields = BaseCustomImagesSerializer.Meta.fields + ['image', 'link_200px', 'link_400px']
+        fields = BaseCustomImagesSerializer.Meta.fields + ['image',
+                                                           'link_200px',
+                                                           'link_400px']
 
 
 class EnterpriseCustomImagesSerializer(BaseCustomImagesSerializer):

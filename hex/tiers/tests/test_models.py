@@ -39,6 +39,7 @@ class ModelTests(TestCase):
     def test_create_custom_image(self):
         """Test creating a custom image instance."""
         user = create_user()
-        custom_image = models.CustomImages.objects.create(user=user, name='image1')
+        custom_image = models.CustomImages.objects.create(user=user,
+                                                          name='image1')
 
         self.assertEqual(str(custom_image), custom_image.name)

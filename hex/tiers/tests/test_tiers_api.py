@@ -77,7 +77,10 @@ class PublicTiersAPITests(TestCase):
 class PrivateTiersApiTests(TestCase):
 
     def setUp(self):
-        self.user = create_user(email='user@example.com', password='test123', is_superuser=True, is_staff=True)
+        self.user = create_user(email='user@example.com',
+                                password='test123',
+                                is_superuser=True,
+                                is_staff=True)
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
@@ -168,13 +171,15 @@ class PrivateTiersApiTests(TestCase):
         res = self.client.get(CUSTOM_IMAGES_URL)
 
         customs = models.CustomImages.objects.filter(user=self.user)
-        serializer = serializers.BasicCustomImagesSerializer(customs, many=True)
+        serializer = serializers.BasicCustomImagesSerializer(customs,
+                                                             many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
     def test_clear_tiers_custom_images(self):
         """Test clearing a tiers custom images is forbidden for normal users."""
-        custom_img = models.CustomImages.objects.create(user=self.user, name='Img1')
+        custom_img = models.CustomImages.objects.create(user=self.user,
+                                                        name='Img1')
         tiers = create_tier(user=self.user)
         tiers.custom_images.add(custom_img)
 

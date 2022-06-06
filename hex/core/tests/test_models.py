@@ -15,7 +15,8 @@ class ModelTests(TestCase):
     """Test models."""
 
     def test_crete_user_with_email_successful(self):
-        """Testing creating a user with an email, password and permissions is successful."""
+        """Testing creating a user with an email,
+            password and permissions is successful."""
         email = 'test@example.com'
         password = 'password123'
         account_plan = 'bp'

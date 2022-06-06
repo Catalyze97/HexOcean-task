@@ -3,7 +3,8 @@ from rest_framework import permissions
 
 
 class UserPermission(permissions.BasePermission):
-    """Permissions for normal users, forbidding create, update and destroy tier. """
+    """Permissions for normal users,
+        forbidding create, update and destroy tier."""
     def has_permission(self, request, view):
 
         if view.action == ['POST', 'destroy', 'update', 'partial_update']:
