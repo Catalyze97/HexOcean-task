@@ -1,16 +1,13 @@
 """
 Serializers for the user API View.
 """
-
 from django.contrib.auth import (
     get_user_model,
     authenticate,
 
 )
 from django.utils.translation import gettext as _
-from rest_framework import serializers, status
-from django.urls import reverse
-from rest_framework.response import Response
+from rest_framework import serializers
 
 
 class BaseUserSerializer(serializers.ModelSerializer):

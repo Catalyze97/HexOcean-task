@@ -35,7 +35,7 @@ class Tier(models.Model):
 
 
 class AvatarThumbnail(ImageSpec):
-
+    """Get model imageField source file and custom link heights and widths."""
     @property
     def processors(self):
         model, field_name = get_field_info(self.source)

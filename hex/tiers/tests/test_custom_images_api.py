@@ -11,7 +11,6 @@ from rest_framework.test import APIClient
 from tiers.models import CustomImages
 from tiers import serializers
 
-
 CUSTOM_IMAGES_URL = reverse('tiers:customimages-list')
 
 

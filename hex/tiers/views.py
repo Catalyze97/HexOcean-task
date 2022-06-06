@@ -45,18 +45,6 @@ class TierViewSet(viewsets.ModelViewSet):
             user=self.request.user
         ).order_by('-id').distinct()
 
-    # def get_permissions(self):
-    #     """Normal users are allowed to get action."""
-    #     if self.action == 'post':
-    #         self.permission_classes = [IsAdminUser, ]
-    #     elif self.action == 'put':
-    #         self.permission_classes = [IsAdminUser, ]
-    #     elif self.action == 'patch':
-    #         self.permission_classes = [IsAdminUser, ]
-    #     elif self.action == 'delete':
-    #         self.permission_classes = [IsAdminUser, ]
-    #     return super(self.__class__, self).get_permissions()
-
     def get_serializer_class(self):
         """Return the serializer class for request."""
         if self.action == 'list':
@@ -85,11 +73,11 @@ class CustomImagesViewSet(mixins.DestroyModelMixin,
                           mixins.CreateModelMixin,
                           viewsets.GenericViewSet):
 
+    """Manage Custom Images in database."""
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.BaseCustomImagesSerializer
 
-    """Manage Custom Images in database."""
     def get_serializer_class(self):
         """Get serializer class belong to tier account. """
         if self.action == 'upload_image':

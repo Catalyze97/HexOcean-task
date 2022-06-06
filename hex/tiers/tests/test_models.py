@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.urls import reverse
 
 from unittest.mock import patch
 
@@ -10,10 +9,6 @@ from django.contrib.auth import get_user_model
 def create_user(email='user@example.com', password='testpass123'):
     """Create and return new user."""
     return get_user_model().objects.create_user(email, password)
-
-# def image_upload_url(customimage_id):
-#     """Create and return an image upload URL."""
-#     return reverse('customimage:customimage-upload-image', args=[customimage_id])
 
 
 class ModelTests(TestCase):
@@ -30,7 +25,6 @@ class ModelTests(TestCase):
             description='Sample tier description.',
 
         )
-
         self.assertEqual(str(tiers), tiers.title)
 
     @patch('tiers.models.uuid.uuid4')
@@ -48,6 +42,3 @@ class ModelTests(TestCase):
         custom_image = models.CustomImages.objects.create(user=user, name='image1')
 
         self.assertEqual(str(custom_image), custom_image.name)
-
-
-

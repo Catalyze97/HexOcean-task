@@ -7,8 +7,6 @@ import os
 
 from PIL import Image
 
-from unittest.mock import patch
-
 from tiers import models
 from django.contrib.auth import get_user_model
 
@@ -27,7 +25,8 @@ def detail_url(tier_id):
 
 
 def image_upload_url(customimages_id):
-    return reverse('tiers:customimages-detail', args=[customimages_id])
+    """Create and return a custom images upload url."""
+    return reverse('tiers:customimages-upload-image', args=[customimages_id])
 
 
 def create_tier(user, **params):
@@ -50,8 +49,6 @@ def create_custom_images(user, **params):
         'expiring_link_val': 50,
         'expiring_link': '',
         'custom_expiring_link': '',
-
-
     }
     defaults.update(params)
 
@@ -61,7 +58,6 @@ def create_custom_images(user, **params):
 
 def create_user(**params):
     """Create and return a new user."""
-
     return get_user_model().objects.create_user(**params)
 
 
@@ -118,7 +114,7 @@ class PrivateTiersApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_tier_partial_update(self):
-        """Test partial update of tier."""
+        """Test forbidden partial update of tier for normal users."""
         description = 'Sample description'
         tier = create_tier(
             user=self.user,
@@ -129,14 +125,14 @@ class PrivateTiersApiTests(TestCase):
         url = detail_url(tier.id)
         res = self.client.patch(url, payload)
 
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
         tier.refresh_from_db()
-        self.assertEqual(tier.title, payload['title'])
+        self.assertNotEqual(tier.title, payload['title'])
         self.assertEqual(tier.description, description)
         self.assertEqual(tier.user, self.user)
 
     def test_tier_full_update(self):
-        """Test full update of tier."""
+        """Test full update of tier is forbidden for normal users."""
         tier = create_tier(
             user=self.user,
             title='Sample title',
@@ -149,70 +145,19 @@ class PrivateTiersApiTests(TestCase):
         url = detail_url(tier.id)
         res = self.client.put(url, payload)
 
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
         tier.refresh_from_db()
         for k, v in payload.items():
-            self.assertEqual(getattr(tier, k), v)
+            self.assertNotEqual(getattr(tier, k), v)
             self.assertEqual(tier.user, self.user)
 
     def test_delete_tier(self):
-        """Test deleting a tier successful"""
+        """Test deleting a tier is refused to normal users."""
         tier = create_tier(user=self.user)
-
         url = detail_url(tier.id)
         res = self.client.delete(url)
 
-        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(models.Tier.objects.filter(id=tier.id).exists())
-
-    # def test_tiers_with_new_custom_images(self):
-    #     """Test crating a custom images in tiers by normal user."""
-    #     payload = {
-    #         'title': 'Basic User',
-    #         'description': 'Basic user account tier.',
-    #         'custom_images': [{'name': 'Img'}, {'name': 'Image'}]
-    #     }
-    #
-    #     res = self.client.post(TIERS_URL, payload, format='json')
-    #
-    #     self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
-    #     tier = models.Tier.objects.filter(user=self.user)
-    #     self.assertEqual(tier.count(), 1)
-    #     tiers = tier[0]
-    #     self.assertEqual(tiers.custom_images.count(), 2)
-    #     for customimages in payload['custom_images']:
-    #         exists = tiers.custom_images.filter(
-    #             name=customimages['name'],
-    #             user=self.user,
-    #         ).exists()
-    #         self.assertTrue(exists)
-
-    # def test_create_tier_with_existing_custom_images(self):
-    #     """Test creating a tier with existing custom images."""
-    #     custom_image1 = models.CustomImages.objects.create(user=self.user, name='Img1')
-    #     payload = {
-    #         'title': 'Basic User 2',
-    #         'description': 'Basic user 2 account tier.',
-    #         'custom_images': [
-    #             {'name': 'Img1'},
-    #             {'name': 'Image2'},
-    #         ]
-    #     }
-    #
-    #     res = self.client.post(TIERS_URL, payload, format='json')
-    #
-    #     self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
-    #     tiers = models.Tier.objects.filter(user=self.user)
-    #     self.assertEqual(tiers.count(), 1)
-    #     tiers = tiers[0]
-    #     self.assertEqual(tiers.custom_images.count(), 2)
-    #     self.assertIn(custom_image1, tiers.custom_images.all())
-    #     for custom_images in payload['custom_images']:
-    #         exists = tiers.custom_images.filter(
-    #             name=custom_images['name'],
-    #             user=self.user,
-    #         ).exists()
-    #         self.assertTrue(exists)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_custom_images_list_limited_to_user(self):
         """Test list of custom images are limited to authenticated user."""
@@ -227,35 +172,8 @@ class PrivateTiersApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-    def test_create_a_custom_image_on_update(self):
-        """Test creating a custom image on updating a tier."""
-        tiers = create_tier(user=self.user)
-
-        payload = {'custom_images': [{'name': 'Image580'}]}
-        url = detail_url(tiers.id)
-        res = self.client.patch(url, payload, format='json')
-
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        new_image = models.CustomImages.objects.get(user=self.user, name='Image580')
-        self.assertIn(new_image, tiers.custom_images.all())
-
-    def test_update_tier_assign_image(self):
-        """Test assigning an existing custom image when updating a tier."""
-        custom_image_15 = models.CustomImages.objects.create(user=self.user, name='Img15')
-        tiers = create_tier(user=self.user)
-        tiers.custom_images.add(custom_image_15)
-
-        custom_image_20 = models.CustomImages.objects.create(user=self.user, name='Img20')
-        payload = {'custom_images': [{'name': 'Img20'}]}
-        url = detail_url(tiers.id)
-        res = self.client.patch(url, payload, format='json')
-
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertIn(custom_image_20, tiers.custom_images.all())
-        self.assertNotIn(custom_image_15, tiers.custom_images.all())
-
     def test_clear_tiers_custom_images(self):
-        """Test clearing a tiers custom images."""
+        """Test clearing a tiers custom images is forbidden for normal users."""
         custom_img = models.CustomImages.objects.create(user=self.user, name='Img1')
         tiers = create_tier(user=self.user)
         tiers.custom_images.add(custom_img)
@@ -264,8 +182,8 @@ class PrivateTiersApiTests(TestCase):
         url = detail_url(tiers.id)
         res = self.client.patch(url, payload, format='json')
 
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(tiers.custom_images.count(), 0)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(tiers.custom_images.count(), 1)
 
 
 class UploadImageTest(TestCase):
@@ -277,22 +195,22 @@ class UploadImageTest(TestCase):
             'password123'
         )
         self.client.force_authenticate(self.user)
-        self.customimages = create_custom_images(user=self.user)
+        self.CustomImages = create_custom_images(user=self.user)
 
     def tearDown(self):
-        self.customimages.image.delete()
+        self.CustomImages.image.delete()
 
     def test_upload_image(self):
-        """test"""
-        url = image_upload_url(self.customimages.id)
+        """test creating and uploading image."""
+        url = image_upload_url(self.CustomImages.id)
         with tempfile.NamedTemporaryFile(suffix='.jpg') as image_file:
             img = Image.new('RGB', (10, 10))
-            img.save(image_file, format='JPEG')
+            img.save(image_file, format='PNG')
             image_file.seek(0)
             payload = {'image': image_file}
             res = self.client.post(url, payload, format='multipart')
 
-        self.customimages.refresh_from_db()
+        self.CustomImages.refresh_from_db()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertIn('image', res.data)
-        self.assertTrue(os.path.exists(self.customimages.image.path))
+        self.assertTrue(os.path.exists(self.CustomImages.image.path))
