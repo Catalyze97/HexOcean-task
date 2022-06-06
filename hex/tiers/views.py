@@ -102,7 +102,8 @@ class CustomImagesViewSet(mixins.DestroyModelMixin,
         queryset = self.queryset
         if assigned_only:
             queryset = queryset.filter(customimages__isnull=False)
-        return queryset.filter(user=self.request.user).order_by('-name').distinct()
+        return queryset.filter(
+            user=self.request.user).order_by('-name').distinct()
 
     queryset = CustomImages.objects.all()
 

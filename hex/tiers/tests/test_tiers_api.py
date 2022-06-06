@@ -177,7 +177,8 @@ class PrivateTiersApiTests(TestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_clear_tiers_custom_images(self):
-        """Test clearing a tiers custom images is forbidden for normal users."""
+        """Test clearing a tiers custom images
+            is forbidden for normal users."""
         custom_img = models.CustomImages.objects.create(user=self.user,
                                                         name='Img1')
         tiers = create_tier(user=self.user)

@@ -11,6 +11,7 @@ from tiers.models import (
 
 class BaseCustomImagesSerializer(serializers.ModelSerializer):
     """Base serializer for Custom Images serializers."""
+
     class Meta:
         model = CustomImages
         fields = ['id', 'name']
@@ -55,9 +56,10 @@ class AdminCustomImagesSerializer(BaseCustomImagesSerializer):
     custom_link = serializers.ImageField(read_only=True)
 
     class Meta(BaseCustomImagesSerializer.Meta):
-        fields = BaseCustomImagesSerializer.Meta.fields + ['custom_expiring_link',
-                                                           'custom_link',
-                                                           'image']
+        fields = BaseCustomImagesSerializer.Meta.fields \
+                 + ['custom_expiring_link',
+                    'custom_link',
+                    'image']
 
 
 class TierSerializer(serializers.ModelSerializer):
