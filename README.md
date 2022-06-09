@@ -63,6 +63,3 @@ In terminal:
 3) docker-compose up -d --build --remove-orphans
 4) docker-compose run --rm app sh -c "python manage.py makemigrations"
 5) docker-compose up
-
-Project with Swagger API UI:
-https://github.com/Catalyze97/HexOcean-task-swagger
