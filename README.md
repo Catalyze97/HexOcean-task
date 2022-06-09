@@ -1,5 +1,3 @@
-HexOcean task for Backend Python+django Engineer position.
-
 Start date: 30.05.2022.
 Finish date: 06.05.2022.
 
@@ -11,11 +9,6 @@ and install all requirements in file requirements.txt.
 
 Clone git repository, get into valid directory and type in terminal:
 docker-compose up
-
-This version of project is made for default API Rest framework user UI.
-
-I Recommend to use version for SWAGGER API UI for authorization by token. 
-In this project user authorization is made by session authenticate.
 
 To get admin panel, you need to createsuperuser.
 Command:
@@ -73,9 +66,3 @@ In terminal:
 
 Project with Swagger API UI:
 https://github.com/Catalyze97/HexOcean-task-swagger
-
-**IMPORTANT NOTE** - 
-I've changed my schema model of project in last three days, and application tiers was created 
-to check how many users are using Basic tier, Premium tier etc. I had no time to refactor this code to work properly,
-so this application doesn't fulfill all of its intended functions.
-I had no time to create expiring links, but I had an idea how to make this thing.
