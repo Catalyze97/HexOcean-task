@@ -1,11 +1,4 @@
-Start date: 30.05.2022.
-Finish date: 06.05.2022.
-
-Time spent: 55-60 hours
-
-Make sure you have docker and docker-compose installed, 
-and install all requirements in file requirements.txt.
-
+Make sure you have docker and docker-compose installed
 
 Clone git repository, get into valid directory and type in terminal:
 docker-compose up
